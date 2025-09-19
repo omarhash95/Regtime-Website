@@ -1,0 +1,23 @@
+@import '../styles/tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Focus styles */
+:root { --focus-color: var(--brand-primary); }
+:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+/* Decorative layers should not block interactions */
+[data-decorative='true'] { pointer-events: none; }
+
+/* CSS Ribbon Fallback (no JS) for reduced-motion — global pattern only */
+.ribbon-fallback {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(120,199,234,0.25), transparent 60%),
+    conic-gradient(from 200deg at 50% 40%, rgba(240,230,140,0.18), rgba(90,160,180,0.22), transparent 60%),
+    linear-gradient(90deg, #DEEDF4 0%, #78C7EA 100%);
+  mask: linear-gradient(180deg, #000 55%, transparent);
+  -webkit-mask: linear-gradient(180deg, #000 55%, transparent);
+}
+@media (prefers-reduced-motion: reduce) { .motion-safe-only { display: none !important; } }
