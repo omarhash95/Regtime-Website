@@ -28,24 +28,23 @@ export function SignupForm() {
           data: {
             name,
           },
-          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       })
 
       if (error) {
         toast.error(error.message)
-        console.error('Signup error:', error)
       } else if (data.user) {
-        if (data.session) {
-          toast.success('Account created successfully!')
-          router.push('/dashboard')
-          router.refresh()
-        } else {
-          toast.success('Please check your email to confirm your account')
-        }
+        await supabase.from('users').insert({
+          id: data.user.id,
+          email: data.user.email,
+          name,
+        })
+
+        toast.success('Account created successfully')
+        router.push('/dashboard')
+        router.refresh()
       }
     } catch (error) {
-      console.error('Unexpected error during signup:', error)
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)
