@@ -2,6 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Upload, Download } from 'lucide-react'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default function ImportExportPage() {
   return (
     <div className="space-y-6">
