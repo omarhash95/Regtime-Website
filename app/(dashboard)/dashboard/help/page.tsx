@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HelpCircle, Book, FileQuestion, MessageCircle } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 const helpTopics = [
   {
     title: 'Getting Started',
@@ -23,10 +25,6 @@ const helpTopics = [
     description: 'Get help from our support team',
   },
 ]
-
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
 
 export default function HelpPage() {
   return (
