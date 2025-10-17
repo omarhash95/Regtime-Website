@@ -12,7 +12,6 @@ const navigation = [
   { name: 'About', href: '/about' },
   { name: 'Products', href: '/services' },
   { name: 'Contact', href: '/contact' },
-  { name: 'Dashboard', href: '/dashboard' },
 ];
 
 export default function Header() {
