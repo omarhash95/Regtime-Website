@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HelpCircle, Book, FileQuestion, MessageCircle } from 'lucide-react'
 
-export const dynamic = 'force-dynamic'
-
 const helpTopics = [
   {
     title: 'Getting Started',

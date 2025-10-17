@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Calculator } from 'lucide-react'
 
-export const dynamic = 'force-dynamic'
-
 export default function CalculatorPage() {
   return (
     <div className="space-y-6">
