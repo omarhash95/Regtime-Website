@@ -54,7 +54,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  themeColor: '#0b0b0b',
   openGraph: {
     title: 'Regtime - Professional Time Management Solutions',
     description: 'Transform your business with Regtime\'s comprehensive time management platform.',
@@ -88,6 +87,10 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+};
+
+export const viewport = {
+  themeColor: '#0b0b0b',
 };
 
 export default function RootLayout({

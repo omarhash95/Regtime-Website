@@ -20,19 +20,21 @@ export function LoginForm() {
     setLoading(true)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (error) {
         toast.error(error.message)
-      } else {
+        console.error('Login error:', error)
+      } else if (data.session) {
         toast.success('Logged in successfully')
         router.push('/dashboard')
         router.refresh()
       }
     } catch (error) {
+      console.error('Unexpected error during login:', error)
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)
