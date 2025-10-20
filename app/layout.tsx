@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
@@ -36,6 +36,7 @@ const aspekta = localFont({
   ],
   variable: '--font-aspekta',
   display: 'swap',
+  fallback: ['Inter', 'system-ui', 'sans-serif'],
 });
 
 export const metadata: Metadata = {
@@ -54,7 +55,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  themeColor: '#0b0b0b',
   openGraph: {
     title: 'Regtime - Professional Time Management Solutions',
     description: 'Transform your business with Regtime\'s comprehensive time management platform.',
@@ -88,6 +88,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0b0b0b',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({
