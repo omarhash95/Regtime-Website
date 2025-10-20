@@ -18,6 +18,11 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  compiler: {
+    // Disable SWC and use Babel for environments where native addons are disabled
+    removeConsole: false,
+  },
+  swcMinify: false,
 };
 
 module.exports = nextConfig;

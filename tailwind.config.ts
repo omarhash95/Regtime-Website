@@ -10,9 +10,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        aspekta: ['var(--font-aspekta)', 'Inter', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-aspekta)', 'Inter', 'system-ui', 'sans-serif'],
-        body: ['var(--font-aspekta)', 'Inter', 'system-ui', 'sans-serif'],
+        aspekta: ['Aspekta', 'Inter', 'system-ui', 'sans-serif'],
+        heading: ['Aspekta', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['Aspekta', 'Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
