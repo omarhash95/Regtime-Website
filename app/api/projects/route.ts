@@ -4,16 +4,9 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const supabase = await createClient()
 
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const { data: projects, error } = await supabase
     .from('projects')
     .select('*')
-    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -26,19 +19,13 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const supabase = await createClient()
 
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const body = await request.json()
 
   const { data: project, error } = await supabase
     .from('projects')
     .insert({
       ...body,
-      user_id: user.id,
+      user_id: '00000000-0000-0000-0000-000000000000',
     })
     .select()
     .single()

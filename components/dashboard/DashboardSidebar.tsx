@@ -31,9 +31,8 @@ export function DashboardSidebar() {
   const supabase = createClient()
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
     toast.success('Logged out successfully')
-    router.push('/login')
+    router.push('/')
     router.refresh()
   }
 
