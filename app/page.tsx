@@ -1,206 +1,117 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ScrollStory from '@/components/sections/ScrollStory';
-import BrandHero from '@/components/brand/BrandHero';
-import Reveal from '@/components/ui/Reveal';
-import TiltCard from '@/components/ui/TiltCard';
-import MagneticButton from '@/components/ui/MagneticButton';
-import StatCounter from '@/components/ui/StatCounter';
-import MarketGrid from '@/components/market/MarketGrid';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { FolderKanban, Building2, Clock, CheckCircle2 } from 'lucide-react'
 
-import FeaturesSection from '@/components/sections/FeaturesSection';
+export const dynamic = 'force-dynamic'
 
-const products = [
-  {
-    name: 'Regtime Manager',
-    image: '/Regtime Manager Blue 1080px.png',
-    description: 'Comprehensive time management for teams and projects',
-    features: ['Advanced time tracking', 'Project management', 'Team collaboration', 'Custom reporting'],
-    color: 'from-blue-500 to-blue-600'
-  },
-  {
-    name: 'Regtime Marketer',
-    image: '/Regtime Marketer Cadet 1080px.png',
-    description: 'Specialized tools for marketing teams and campaigns',
-    features: ['Campaign tracking', 'ROI analytics', 'Client billing', 'Performance metrics'],
-    color: 'from-teal-500 to-teal-600'
-  },
-  {
-    name: 'Regtime Builder',
-    image: '/Regtime Builder Maize 1080px.png',
-    description: 'Purpose-built for construction and project-based work',
-    features: ['Job site tracking', 'Equipment monitoring', 'Labor cost analysis', 'Progress reporting'],
-    color: 'from-yellow-500 to-yellow-600'
+async function getStats() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?select=*&order=created_at.desc&limit=5`, {
+      headers: {
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        'Content-Type': 'application/json'
+      },
+      cache: 'no-store'
+    })
+
+    if (!response.ok) {
+      return { projectsCount: 0, activeProjectsCount: 0, recentProjects: [] }
+    }
+
+    const projects = await response.json()
+    const activeProjects = projects.filter((p: any) => p.status === 'active')
+
+    return {
+      projectsCount: projects.length,
+      activeProjectsCount: activeProjects.length,
+      recentProjects: projects.slice(0, 5)
+    }
+  } catch (error) {
+    return { projectsCount: 0, activeProjectsCount: 0, recentProjects: [] }
   }
-];
+}
 
-export default function Home() {
+export default async function DashboardPage() {
+  const { projectsCount, activeProjectsCount, recentProjects } = await getStats()
+
+  const stats = [
+    {
+      title: 'Total Projects',
+      value: projectsCount || 0,
+      icon: FolderKanban,
+      color: 'text-blue-500'
+    },
+    {
+      title: 'Active Projects',
+      value: activeProjectsCount || 0,
+      icon: CheckCircle2,
+      color: 'text-green-500'
+    },
+    {
+      title: 'Properties',
+      value: 0,
+      icon: Building2,
+      color: 'text-purple-500'
+    },
+    {
+      title: 'Hours Tracked',
+      value: 0,
+      icon: Clock,
+      color: 'text-orange-500'
+    }
+  ]
+
   return (
-    <div className="bg-background">
-      <Header />
-      
-      {/* Brand Hero Section */}
-      <BrandHero />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">
+          Welcome back! Here's an overview of your projects.
+        </p>
+      </div>
 
-      {/* Products Showcase - Highlighting the three main products */}
-      <div className="py-24 sm:py-32 bg-muted/30">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <Reveal>
-            <div className="mx-auto max-w-2xl lg:text-center mb-16">
-              <h2 className="text-base font-semibold leading-7 text-brand-primary">From Foundation to Success</h2>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Three products that scale with your Project
-              </p>
-              <p className="mt-6 text-lg leading-8 text-white">
-                Start with solid fundamentals, scale your operations with effective marketing, and achieve peak performance with our integrated product suite.
-              </p>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <Card key={stat.title}>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {stat.title}
+              </CardTitle>
+              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Projects</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {recentProjects && recentProjects.length > 0 ? (
+            <div className="space-y-4">
+              {recentProjects.map((project: any) => (
+                <div key={project.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div>
+                    <h3 className="font-medium text-foreground">{project.name}</h3>
+                    <p className="text-sm text-muted-foreground">{project.description || 'No description'}</p>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(project.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
             </div>
-          </Reveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Foundation — Regtime Builder (WHITE logo) */}
-            <Reveal delayStep={0.1}>
-              <TiltCard className="relative overflow-hidden bg-[hsl(var(--card))] ring-1 ring-[hsl(var(--border))] rounded-2xl border hover:shadow-xl transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-blue-600 opacity-10" />
-                <div className="relative p-8">
-                  <div className="flex justify-center mb-6">
-                    <span className="inline-flex items-center justify-center rounded-xl bg-white p-3 ring-1 ring-[hsl(var(--border))]">
-                      <Image
-                        src="/Regtime Builder Night 1080px.png"
-                        alt="Regtime Builder logo"
-                        width={160}
-                        height={160}
-                        className="h-16 w-auto"
-                        priority
-                      />
-                    </span>
-                  </div>
-                  <div className="text-center mb-6">
-                    <div className="h-20 flex flex-col justify-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">Foundation</h3>
-                      <div className="text-sm font-medium text-brand-primary">Step 1: Build Your Base</div>
-                    </div>
-                    <p className="mt-2 text-white">Purpose-built for construction and project-based work.</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </Reveal>
-
-            {/* Growth — Regtime Marketer (NIGHT logo) */}
-            <Reveal delayStep={0.2}>
-              <TiltCard className="relative overflow-hidden bg-[hsl(var(--card))] ring-1 ring-[hsl(var(--border))] rounded-2xl border hover:shadow-xl transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-blue-600 opacity-10" />
-                <div className="relative p-8">
-                  <div className="flex justify-center mb-6">
-                    <span className="inline-flex items-center justify-center rounded-xl bg-white p-3 ring-1 ring-[hsl(var(--border))]">
-                      <Image
-                        src="/Regtime Marketer Night 1080px.png"
-                        alt="Regtime Marketer logo"
-                        width={160}
-                        height={160}
-                        className="h-16 w-auto"
-                      />
-                    </span>
-                  </div>
-                  <div className="text-center mb-6">
-                    <div className="h-20 flex flex-col justify-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">Growth</h3>
-                      <div className="text-sm font-medium text-brand-primary">Step 2: Scale Your Reach</div>
-                    </div>
-                    <p className="mt-2 text-white">Specialized tools for marketing teams and campaigns.</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </Reveal>
-
-            {/* Success — Regtime Manager (NIGHT logo) */}
-            <Reveal delayStep={0.3}>
-              <TiltCard className="relative overflow-hidden bg-[hsl(var(--card))] ring-1 ring-[hsl(var(--border))] rounded-2xl border hover:shadow-xl transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-blue-600 opacity-10" />
-                <div className="relative p-8">
-                  <div className="flex justify-center mb-6">
-                    <span className="inline-flex items-center justify-center rounded-xl bg-white p-3 ring-1 ring-[hsl(var(--border))]">
-                      <Image
-                        src="/Regtime Manager Night 1080px.png"
-                        alt="Regtime Manager logo"
-                        width={160}
-                        height={160}
-                        className="h-16 w-auto"
-                      />
-                    </span>
-                  </div>
-                  <div className="text-center mb-6">
-                    <div className="h-20 flex flex-col justify-center">
-                      <h3 className="text-xl font-bold text-foreground mb-2">Success</h3>
-                      <div className="text-sm font-medium text-brand-primary">Step 3: Orchestrate & Optimize</div>
-                    </div>
-                    <p className="mt-2 text-white">Comprehensive time management for teams and projects.</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </Reveal>
-          </div>
-        </div>
-      </div>
-
-      {/* Application Preview — ScrollStory (restored) */}
-      <ScrollStory className="mx-auto max-w-7xl px-6 lg:px-8" />
-
-      {/* Everything you need (features) */}
-      <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-7xl">
-        <FeaturesSection />
-      </div>
-
-      {/* Final CTA Section */}
-      <section className="py-24 sm:py-32">
-        <div className="mx-auto max-w-4xl px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-6xl font-bold text-foreground mb-8">
-            Ready to{' '}
-            <span className="bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent">
-              transform
-            </span>{' '}
-            your workflow?
-          </h2>
-          <p className="text-xl text-white mb-12 max-w-2xl mx-auto">
-            Join thousands of teams already using Regtime to optimize their productivity
-            and achieve better results.
-          </p>
-
-          {/* KPI Counters */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {[
-              { label: 'Companies', value: 10000, suffix: '+' },
-              { label: 'Hours Tracked', value: 2500000, suffix: '+' },
-              { label: 'Satisfaction', value: 99, suffix: '%' }
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl font-bold text-brand-primary mb-2">
-                  <StatCounter 
-                    end={stat.value} 
-                    suffix={stat.suffix}
-                    duration={2000}
-                  />
-                </div>
-                <p className="text-white">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <MagneticButton
-              href="/contact"
-              className="bg-brand-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-brand-primary/90 transition-colors"
-            >
-              Contact Us
-            </MagneticButton>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <FolderKanban className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p>No projects yet. Create your first project to get started!</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }
