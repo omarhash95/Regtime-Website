@@ -1,22 +1,37 @@
-import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FolderKanban, Building2, Clock, CheckCircle2 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+async function getStats() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?select=*&order=created_at.desc&limit=5`, {
+      headers: {
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        'Content-Type': 'application/json'
+      },
+      cache: 'no-store'
+    })
 
-  const [
-    { count: projectsCount },
-    { count: activeProjectsCount },
-    { data: recentProjects }
-  ] = await Promise.all([
-    supabase.from('projects').select('*', { count: 'exact', head: true }).eq('user_id', user?.id),
-    supabase.from('projects').select('*', { count: 'exact', head: true }).eq('user_id', user?.id).eq('status', 'active'),
-    supabase.from('projects').select('*').eq('user_id', user?.id).order('created_at', { ascending: false }).limit(5)
-  ])
+    if (!response.ok) {
+      return { projectsCount: 0, activeProjectsCount: 0, recentProjects: [] }
+    }
+
+    const projects = await response.json()
+    const activeProjects = projects.filter((p: any) => p.status === 'active')
+
+    return {
+      projectsCount: projects.length,
+      activeProjectsCount: activeProjects.length,
+      recentProjects: projects.slice(0, 5)
+    }
+  } catch (error) {
+    return { projectsCount: 0, activeProjectsCount: 0, recentProjects: [] }
+  }
+}
+
+export default async function DashboardPage() {
+  const { projectsCount, activeProjectsCount, recentProjects } = await getStats()
 
   const stats = [
     {

@@ -1,20 +1,32 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Plus, FolderKanban } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
-export default async function ProjectsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+async function getProjects() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?select=*&order=created_at.desc`, {
+      headers: {
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        'Content-Type': 'application/json'
+      },
+      cache: 'no-store'
+    })
 
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('user_id', user?.id)
-    .order('created_at', { ascending: false })
+    if (!response.ok) {
+      return []
+    }
+
+    return await response.json()
+  } catch (error) {
+    return []
+  }
+}
+
+export default async function ProjectsPage() {
+  const projects = await getProjects()
 
   return (
     <div className="space-y-6">

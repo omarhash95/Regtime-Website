@@ -24,8 +24,10 @@ export function useLenis() {
       });
 
       const raf = (time: number) => {
-        lenis.raf(time);
-        rafRef.current = requestAnimationFrame(raf);
+        if (lenis) {
+          lenis.raf(time);
+          rafRef.current = requestAnimationFrame(raf);
+        }
       };
 
       rafRef.current = requestAnimationFrame(raf);

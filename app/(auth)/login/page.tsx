@@ -10,7 +10,7 @@ export default function LoginPage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
               <Image
-                src="/Limited White 1080px.png"
+                src="/Lockup White 1080px.png"
                 alt="Regtime"
                 width={200}
                 height={60}

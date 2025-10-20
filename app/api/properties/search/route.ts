@@ -1,15 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
-  const supabase = await createClient()
-
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const { searchParams } = new URL(request.url)
   const query = searchParams.get('q')
 
@@ -17,15 +8,24 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Query parameter required' }, { status: 400 })
   }
 
-  const { data: properties, error } = await supabase
-    .from('properties')
-    .select('*')
-    .or(`bbl.ilike.%${query}%,address.ilike.%${query}%,owner_name.ilike.%${query}%`)
-    .limit(20)
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/properties?or=(bbl.ilike.*${query}*,address.ilike.*${query}*,owner_name.ilike.*${query}*)&limit=20`,
+      {
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (!response.ok) {
+      return NextResponse.json({ error: 'Failed to fetch properties' }, { status: 500 })
+    }
+
+    const properties = await response.json()
+    return NextResponse.json(properties)
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  return NextResponse.json(properties)
 }

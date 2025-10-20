@@ -1,38 +1,54 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
-export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+async function getProjectData(projectId: string) {
+  try {
+    const [projectRes, unitsRes, tasksRes] = await Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?id=eq.${projectId}&select=*`, {
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      }),
+      fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/units?project_id=eq.${projectId}&select=*`, {
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      }),
+      fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/tasks?project_id=eq.${projectId}&select=*&order=created_at.desc&limit=5`, {
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      })
+    ])
 
-  const { data: project } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('id', params.id)
-    .eq('user_id', user?.id)
-    .maybeSingle()
+    const projects = await projectRes.json()
+    const project = projects && projects.length > 0 ? projects[0] : null
+    const units = await unitsRes.json()
+    const tasks = await tasksRes.json()
+
+    return { project, units, tasks }
+  } catch (error) {
+    return { project: null, units: [], tasks: [] }
+  }
+}
+
+export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
+  const { project, units, tasks } = await getProjectData(params.id)
 
   if (!project) {
     notFound()
   }
-
-  const { data: units } = await supabase
-    .from('units')
-    .select('*')
-    .eq('project_id', params.id)
-
-  const { data: tasks } = await supabase
-    .from('tasks')
-    .select('*')
-    .eq('project_id', params.id)
-    .order('created_at', { ascending: false })
-    .limit(5)
 
   return (
     <div className="space-y-6">
