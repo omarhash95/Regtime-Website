@@ -24,7 +24,7 @@ const services = [
   {
     name: 'Regtime Marketer',
     description: 'Grow demand and prove ROI.',
-    image: '/Regtime Marketer White 1080px copy.png',
+    image: '/Regtime Marketer White 1080px.png',
     features: [
       'Campaign tracking',
       'ROI analytics',
