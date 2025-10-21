@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   FolderKanban,
@@ -10,11 +10,7 @@ import {
   Import,
   HelpCircle,
   LogOut
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+} from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -23,18 +19,17 @@ const navigation = [
   { name: 'Calculator', href: '/dashboard/calculator', icon: Calculator },
   { name: 'Import/Export', href: '/dashboard/import-export', icon: Import },
   { name: 'Help', href: '/dashboard/help', icon: HelpCircle },
-]
+];
 
 export function DashboardSidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const supabase = createClient()
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = async () => {
-    toast.success('Logged out successfully')
-    router.push('/')
-    router.refresh()
-  }
+    localStorage.removeItem('supabase_token');
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <div className="flex h-full w-64 flex-col bg-card border-r border-border">
@@ -46,22 +41,21 @@ export function DashboardSidebar() {
 
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navigation.map((item) => {
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/')
+          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-[hsl(var(--primary))] text-primary-foreground'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-              )}
+              }`}
             >
               <item.icon className="h-5 w-5" />
               {item.name}
             </Link>
-          )
+          );
         })}
       </nav>
 
@@ -75,5 +69,5 @@ export function DashboardSidebar() {
         </button>
       </div>
     </div>
-  )
+  );
 }

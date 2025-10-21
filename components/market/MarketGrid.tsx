@@ -1,11 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, TrendingUp, TrendingDown, Zap, Users, Code, Database } from 'lucide-react';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { Search, Filter, TrendingUp, TrendingDown, Zap, Code, Database } from 'lucide-react';
 import MarketCard from './MarketCard';
-import Reveal from '@/components/ui/Reveal';
 
 interface MarketItem {
   id: string;
@@ -107,18 +104,14 @@ export default function MarketGrid({ className = '' }: MarketGridProps) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('trending');
   const [selectedItem, setSelectedItem] = useState<MarketItem | null>(null);
-  const { shouldReduceMotion } = useReducedMotion();
 
-  // Filter and sort items
   const filteredItems = useMemo(() => {
     let items = mockMarketData;
 
-    // Filter by category
     if (selectedCategory !== 'all') {
       items = items.filter(item => item.category === selectedCategory);
     }
 
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       items = items.filter(item =>
@@ -128,7 +121,6 @@ export default function MarketGrid({ className = '' }: MarketGridProps) {
       );
     }
 
-    // Sort items
     items = [...items].sort((a, b) => {
       switch (sortBy) {
         case 'users':
@@ -136,10 +128,9 @@ export default function MarketGrid({ className = '' }: MarketGridProps) {
         case 'rating':
           return b.metrics.rating - a.metrics.rating;
         case 'newest':
-          return a.id.localeCompare(b.id); // Mock newest by ID
+          return a.id.localeCompare(b.id);
         case 'trending':
         default:
-          // Featured first, then by growth
           if (a.featured && !b.featured) return -1;
           if (!a.featured && b.featured) return 1;
           return b.metrics.growth - a.metrics.growth;
@@ -162,237 +153,190 @@ export default function MarketGrid({ className = '' }: MarketGridProps) {
 
   return (
     <div className={`space-y-8 ${className}`}>
-      {/* Header */}
-      <Reveal>
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Productivity Marketplace
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover AI agents, automations, and integrations to supercharge your workflow.
-            Built by the community, for the community.
-          </p>
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-foreground mb-4">
+          Productivity Marketplace
+        </h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Discover AI agents, automations, and integrations to supercharge your workflow.
+          Built by the community, for the community.
+        </p>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search marketplace..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+          />
         </div>
-      </Reveal>
 
-      {/* Controls */}
-      <Reveal delayStep={0.1}>
-        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search marketplace..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
-            />
-          </div>
-
-          {/* Category Filter */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  selectedCategory === category.id
-                    ? 'bg-brand-primary text-white'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                <category.icon className="h-4 w-4" />
-                {category.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Sort */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
-          >
-            {sortOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </Reveal>
-
-      {/* Results Count */}
-      <Reveal delayStep={0.2}>
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {filteredItems.length} {filteredItems.length === 1 ? 'result' : 'results'}
-            {searchQuery && ` for "${searchQuery}"`}
-          </p>
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              {selectedCategory !== 'all' && categories.find(c => c.id === selectedCategory)?.label}
-            </span>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* Grid */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        layout={!shouldReduceMotion}
-      >
-        <AnimatePresence mode="popLayout">
-          {filteredItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              layout={!shouldReduceMotion}
-              initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
-              animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
-              exit={shouldReduceMotion ? {} : { opacity: 0, y: -20 }}
-              transition={{ 
-                duration: 0.3, 
-                delay: shouldReduceMotion ? 0 : index * 0.05,
-                layout: { duration: 0.3 }
-              }}
-            >
-              <MarketCard
-                item={item}
-                onPeek={() => setSelectedItem(item)}
-                trendIcon={getTrendIcon(item.trend)}
-              />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
-
-      {/* Empty State */}
-      {filteredItems.length === 0 && (
-        <Reveal>
-          <div className="text-center py-12">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
-              <Search className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">No results found</h3>
-            <p className="text-muted-foreground mb-4">
-              Try adjusting your search or filter criteria
-            </p>
+        <div className="flex items-center gap-2 flex-wrap">
+          {categories.map((category) => (
             <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('all');
-              }}
-              className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors"
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                selectedCategory === category.id
+                  ? 'bg-[hsl(var(--primary))] text-white'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
             >
-              Clear filters
+              <category.icon className="h-4 w-4" />
+              {category.label}
             </button>
+          ))}
+        </div>
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+        >
+          {sortOptions.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {filteredItems.length} {filteredItems.length === 1 ? 'result' : 'results'}
+          {searchQuery && ` for "${searchQuery}"`}
+        </p>
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
+            {selectedCategory !== 'all' && categories.find(c => c.id === selectedCategory)?.label}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredItems.map((item) => (
+          <MarketCard
+            key={item.id}
+            item={item}
+            onPeek={() => setSelectedItem(item)}
+            trendIcon={getTrendIcon(item.trend)}
+          />
+        ))}
+      </div>
+
+      {filteredItems.length === 0 && (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+            <Search className="h-8 w-8 text-muted-foreground" />
           </div>
-        </Reveal>
+          <h3 className="text-lg font-semibold text-foreground mb-2">No results found</h3>
+          <p className="text-muted-foreground mb-4">
+            Try adjusting your search or filter criteria
+          </p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedCategory('all');
+            }}
+            className="px-4 py-2 bg-[hsl(var(--primary))] text-white rounded-lg hover:opacity-90 transition-colors"
+          >
+            Clear filters
+          </button>
+        </div>
       )}
 
-      {/* Peek Drawer */}
-      <AnimatePresence>
-        {selectedItem && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedItem(null)}
-            />
-            
-            {/* Drawer */}
-            <motion.div
-              className="fixed right-0 top-0 h-full w-full max-w-md bg-background border-l border-border z-50 overflow-y-auto"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-foreground">
-                    {selectedItem.title}
-                  </h3>
-                  <button
-                    onClick={() => setSelectedItem(null)}
-                    className="p-2 hover:bg-muted rounded-lg transition-colors"
-                  >
-                    ×
-                  </button>
+      {selectedItem && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            onClick={() => setSelectedItem(null)}
+          />
+
+          <div className="fixed right-0 top-0 h-full w-full max-w-md bg-background border-l border-border z-50 overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-foreground">
+                  {selectedItem.title}
+                </h3>
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="p-2 hover:bg-muted rounded-lg transition-colors text-2xl leading-none"
+                >
+                  ×
+                </button>
+              </div>
+
+              {selectedItem.image && (
+                <div className="aspect-video mb-4 rounded-lg overflow-hidden">
+                  <img
+                    src={selectedItem.image}
+                    alt={selectedItem.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                
-                {selectedItem.image && (
-                  <div className="aspect-video mb-4 rounded-lg overflow-hidden">
-                    <img
-                      src={selectedItem.image}
-                      alt={selectedItem.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                
-                <p className="text-muted-foreground mb-6">
-                  {selectedItem.description}
-                </p>
-                
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-2">Metrics</h4>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-brand-primary">
-                          {selectedItem.metrics.users.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">Users</div>
+              )}
+
+              <p className="text-muted-foreground mb-6">
+                {selectedItem.description}
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Metrics</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[hsl(var(--primary))]">
+                        {selectedItem.metrics.users.toLocaleString()}
                       </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-brand-primary">
-                          {selectedItem.metrics.growth > 0 ? '+' : ''}{selectedItem.metrics.growth}%
-                        </div>
-                        <div className="text-xs text-muted-foreground">Growth</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-brand-primary">
-                          {selectedItem.metrics.rating}
-                        </div>
-                        <div className="text-xs text-muted-foreground">Rating</div>
-                      </div>
+                      <div className="text-xs text-muted-foreground">Users</div>
                     </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-2">Tags</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedItem.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[hsl(var(--primary))]">
+                        {selectedItem.metrics.growth > 0 ? '+' : ''}{selectedItem.metrics.growth}%
+                      </div>
+                      <div className="text-xs text-muted-foreground">Growth</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-[hsl(var(--primary))]">
+                        {selectedItem.metrics.rating}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Rating</div>
                     </div>
                   </div>
                 </div>
-                
-                <div className="mt-8 space-y-3">
-                  <button className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold hover:bg-brand-primary/90 transition-colors">
-                    Install
-                  </button>
-                  <button className="w-full border border-border py-3 rounded-lg font-semibold hover:bg-muted transition-colors">
-                    Learn More
-                  </button>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Tags</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedItem.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+
+              <div className="mt-8 space-y-3">
+                <button className="w-full bg-[hsl(var(--primary))] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-colors">
+                  Install
+                </button>
+                <button className="w-full border border-border py-3 rounded-lg font-semibold hover:bg-muted transition-colors">
+                  Learn More
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
