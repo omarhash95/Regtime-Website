@@ -1,117 +1,82 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FolderKanban, Building2, Clock, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link';
+import { Building2, Users, TrendingUp } from 'lucide-react';
 
-export const dynamic = 'force-dynamic'
-
-async function getStats() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?select=*&order=created_at.desc&limit=5`, {
-      headers: {
-        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        'Content-Type': 'application/json'
-      },
-      cache: 'no-store'
-    })
-
-    if (!response.ok) {
-      return { projectsCount: 0, activeProjectsCount: 0, recentProjects: [] }
-    }
-
-    const projects = await response.json()
-    const activeProjects = projects.filter((p: any) => p.status === 'active')
-
-    return {
-      projectsCount: projects.length,
-      activeProjectsCount: activeProjects.length,
-      recentProjects: projects.slice(0, 5)
-    }
-  } catch (error) {
-    return { projectsCount: 0, activeProjectsCount: 0, recentProjects: [] }
-  }
-}
-
-export default async function DashboardPage() {
-  const { projectsCount, activeProjectsCount, recentProjects } = await getStats()
-
-  const stats = [
-    {
-      title: 'Total Projects',
-      value: projectsCount || 0,
-      icon: FolderKanban,
-      color: 'text-blue-500'
-    },
-    {
-      title: 'Active Projects',
-      value: activeProjectsCount || 0,
-      icon: CheckCircle2,
-      color: 'text-green-500'
-    },
-    {
-      title: 'Properties',
-      value: 0,
-      icon: Building2,
-      color: 'text-purple-500'
-    },
-    {
-      title: 'Hours Tracked',
-      value: 0,
-      icon: Clock,
-      color: 'text-orange-500'
-    }
-  ]
-
+export default function HomePage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">
-          Welcome back! Here's an overview of your projects.
-        </p>
-      </div>
+    <div className="min-h-screen">
+      <header className="border-b border-border bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="text-2xl font-bold text-brand-primary">Regtime</div>
+          <nav className="flex gap-6">
+            <Link href="/about" className="text-sm hover:text-brand-primary">About</Link>
+            <Link href="/services" className="text-sm hover:text-brand-primary">Services</Link>
+            <Link href="/contact" className="text-sm hover:text-brand-primary">Contact</Link>
+            <Link href="/login" className="text-sm font-medium text-brand-primary hover:text-brand-primary/80">Login</Link>
+          </nav>
+        </div>
+      </header>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <main>
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <h1 className="text-5xl font-bold mb-6">
+              Professional Project Management for <span className="text-brand-primary">Affordable Housing</span>
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Streamline your affordable housing development projects with Regtime's comprehensive management platform. Track properties, manage compliance, and collaborate with your team.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Link
+                href="/signup"
+                className="bg-brand-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-brand-primary/90 transition"
+              >
+                Get Started
+              </Link>
+              <Link
+                href="/dashboard"
+                className="bg-white border border-border px-8 py-3 rounded-lg font-medium hover:bg-gray-50 transition"
+              >
+                View Dashboard
+              </Link>
+            </div>
+          </div>
+        </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Projects</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {recentProjects && recentProjects.length > 0 ? (
-            <div className="space-y-4">
-              {recentProjects.map((project: any) => (
-                <div key={project.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                  <div>
-                    <h3 className="font-medium text-foreground">{project.name}</h3>
-                    <p className="text-sm text-muted-foreground">{project.description || 'No description'}</p>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(project.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-              ))}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Why Choose Regtime?</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white p-6 rounded-lg border border-border">
+                <Building2 className="h-12 w-12 text-brand-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Property Management</h3>
+                <p className="text-muted-foreground">
+                  Track NYC properties with BBL lookup, manage units, and monitor compliance requirements seamlessly.
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-lg border border-border">
+                <Users className="h-12 w-12 text-brand-secondary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Team Collaboration</h3>
+                <p className="text-muted-foreground">
+                  Coordinate with architects, engineers, contractors, and attorneys all in one platform.
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-lg border border-border">
+                <TrendingUp className="h-12 w-12 text-brand-accent mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Progress Tracking</h3>
+                <p className="text-muted-foreground">
+                  Monitor milestones, track time entries, and ensure projects stay on schedule and budget.
+                </p>
+              </div>
             </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <FolderKanban className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>No projects yet. Create your first project to get started!</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-brand-night text-white py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p>&copy; {new Date().getFullYear()} Regtime. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
-  )
+  );
 }
