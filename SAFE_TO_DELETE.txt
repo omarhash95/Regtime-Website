@@ -1,0 +1,120 @@
+================================================================================
+COMPLETE LIST OF FILES/DIRECTORIES SAFE TO DELETE
+================================================================================
+
+These 60+ files are NOT used by the application and can be safely deleted:
+
+DIRECTORIES (13 total - can be completely removed):
+────────────────────────────────────────────────────────────────────────────────
+1.  lib/                          (8 files - Supabase wrappers, utilities)
+2.  hooks/                        (3 files - Lenis, reduced motion, shortcuts)
+3.  scenes/                       (3 files - React Three Fiber 3D scenes)
+4.  components/ui/                (18 files - shadcn/ui components)
+5.  components/brand/             (14 files - Brand Framer Motion components)
+6.  components/sections/          (5 files - Section Framer Motion components)
+7.  components/ux/                (3 files - UX Framer Motion components)
+8.  components/command/           (2 files - CommandPalette with cmdk)
+9.  components/scroll/            (1 file - ScrollOrchestrator)
+10. components/toast/             (2 files - Toast with sonner)
+11. styles/                       (2 files - brand-masks.css, tokens.css)
+12. utils/                        (if exists)
+13. types/                        (1 file - tinykeys.d.ts)
+
+INDIVIDUAL FILES (4 total):
+────────────────────────────────────────────────────────────────────────────────
+14. components/HubSpotEmbed.tsx
+15. components/HubSpotForm.tsx
+16. components/SmoothScrollProvider.tsx
+17. app/layout.tsx.backup
+
+TOTAL: 60+ files that are orphaned and unused
+
+
+================================================================================
+VERIFICATION: Why these are safe to delete
+================================================================================
+
+✅ NO app/ pages import from these directories
+✅ NO rebuilt components import from these directories
+✅ Application builds successfully (verified via npm run build)
+✅ All 23 routes compile without errors
+✅ Only imports are to rebuilt components:
+   - components/Header.tsx
+   - components/Footer.tsx
+   - components/auth/*
+   - components/dashboard/*
+   - components/market/*
+
+
+================================================================================
+WHAT REMAINS (30 rebuilt files):
+================================================================================
+
+app/
+├── page.tsx (rebuilt - uses Header/Footer)
+├── about/page.tsx (rebuilt)
+├── services/page.tsx (rebuilt)
+├── contact/page.tsx (rebuilt)
+├── privacy/page.tsx (rebuilt)
+├── login/page.tsx (rebuilt)
+├── signup/page.tsx (rebuilt)
+├── marketplace/page.tsx (rebuilt - uses MarketGrid)
+├── layout.tsx (rebuilt)
+├── globals.css (rebuilt)
+├── dashboard/
+│   ├── layout.tsx (rebuilt)
+│   ├── page.tsx (rebuilt)
+│   ├── projects/page.tsx (rebuilt)
+│   ├── projects/new/page.tsx (rebuilt)
+│   ├── projects/[id]/page.tsx (rebuilt)
+│   ├── properties/page.tsx (rebuilt)
+│   ├── calculator/page.tsx (rebuilt)
+│   ├── import-export/page.tsx (rebuilt)
+│   └── help/page.tsx (rebuilt)
+└── api/
+    ├── projects/route.ts (rebuilt - pure fetch)
+    ├── projects/[id]/route.ts (rebuilt - pure fetch)
+    └── dashboard/metrics/route.ts (rebuilt - pure fetch)
+
+components/
+├── Header.tsx (rebuilt - Lucide only)
+├── Footer.tsx (rebuilt - Lucide only)
+├── auth/
+│   ├── LoginForm.tsx (rebuilt - pure fetch)
+│   └── SignupForm.tsx (rebuilt - pure fetch)
+├── dashboard/
+│   ├── DashboardHeader.tsx (rebuilt - no deps)
+│   └── DashboardSidebar.tsx (rebuilt - no deps)
+└── market/
+    ├── MarketCard.tsx (rebuilt - no Framer Motion)
+    └── MarketGrid.tsx (rebuilt - no Framer Motion)
+
+lib/
+└── supabase.ts (rebuilt - single unified file)
+
+TOTAL: 30 clean, rebuilt files using only:
+- Next.js 13
+- React 18
+- Tailwind CSS
+- Lucide React (icons only)
+- Pure fetch API
+
+
+================================================================================
+COMMAND TO DELETE ALL ORPHANED FILES:
+================================================================================
+
+rm -rf lib/ hooks/ scenes/ styles/ utils/ types/ \\
+       components/ui/ \\
+       components/brand/ \\
+       components/sections/ \\
+       components/ux/ \\
+       components/command/ \\
+       components/scroll/ \\
+       components/toast/ \\
+       components/HubSpotEmbed.tsx \\
+       components/HubSpotForm.tsx \\
+       components/SmoothScrollProvider.tsx \\
+       app/layout.tsx.backup
+
+================================================================================
