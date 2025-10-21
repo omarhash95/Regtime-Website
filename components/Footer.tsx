@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import MotionToggle from './ui/MotionToggle';
 
 const navigation = {
   main: [
@@ -52,7 +51,7 @@ export default function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm text-white max-w-sm">
-              Premium, on-brand experiences with polished visuals and smarter motion.
+              Professional project management platform for affordable housing development in NYC.
             </p>
           </div>
 
@@ -63,7 +62,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm leading-6 text-white hover:text-white transition-colors"
+                    className="text-sm leading-6 text-white hover:text-white/80 transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -77,7 +76,7 @@ export default function Footer() {
             <ul role="list" className="mt-6 flex gap-4">
               {navigation.social.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-white hover:text-white transition-colors" aria-label={item.name}>
+                  <Link href={item.href} className="text-white hover:text-white/80 transition-colors" aria-label={item.name}>
                     <item.icon className="h-5 w-5" />
                   </Link>
                 </li>
@@ -105,12 +104,9 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-            <p className="text-xs leading-5 text-white">
-              &copy; {new Date().getFullYear()} Regtime. All rights reserved.
-            </p>
-            <MotionToggle />
-          </div>
+          <p className="text-xs leading-5 text-white text-center">
+            &copy; {new Date().getFullYear()} Regtime. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
