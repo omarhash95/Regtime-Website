@@ -3,9 +3,6 @@ import Link from 'next/link';
 import { Check, ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Reveal from '@/components/ui/Reveal';
-import TiltCard from '@/components/ui/TiltCard';
-import MagneticButton from '@/components/ui/MagneticButton';
 
 const services = [
   {
@@ -64,20 +61,18 @@ const additionalServices = [
 
 export default function ServicesPage() {
   return (
-    <div className="bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="px-6 py-16 sm:py-24 lg:px-8">
+      <main className="flex-1 px-6 py-16 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground">Integrated Suite of Products</h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-              Choose the product that fits today and grow into the rest — all designed to work together.
-            </p>
-          </Reveal>
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground">Integrated Suite of Products</h1>
+          <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
+            Choose the product that fits today and grow into the rest — all designed to work together.
+          </p>
 
           <section className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((s) => (
-              <TiltCard key={s.name} className="p-6 ring-1 ring-[hsl(var(--border))] rounded-2xl bg-[hsl(var(--card))]">
+              <div key={s.name} className="p-6 ring-1 ring-border rounded-2xl bg-card shadow-sm">
                 <div className="flex items-center gap-3">
                   <Image src={s.image} alt={`${s.name} logo`} width={56} height={56} className="h-14 w-auto" />
                   <h3 className="text-xl font-semibold text-foreground">{s.name}</h3>
@@ -86,7 +81,7 @@ export default function ServicesPage() {
                 <ul className="mt-4 space-y-2 text-sm">
                   {s.features.map((f) => (
                     <li key={f} className="flex items-start gap-2">
-                      <Check className="mt-[2px] h-4 w-4 text-brand-primary" />
+                      <Check className="mt-[2px] h-4 w-4 text-[hsl(var(--primary))]" />
                       <span className="text-foreground/90">{f}</span>
                     </li>
                   ))}
@@ -94,12 +89,12 @@ export default function ServicesPage() {
                 <div className="mt-6">
                   <Link
                     href={s.href}
-                    className="inline-flex items-center rounded-xl px-4 py-2 ring-1 ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))]"
+                    className="inline-flex items-center rounded-xl px-4 py-2 ring-1 ring-border hover:bg-muted transition-colors"
                   >
                     {s.cta} <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </section>
 
@@ -107,13 +102,13 @@ export default function ServicesPage() {
             <h2 className="text-2xl font-semibold text-foreground">Professional Services</h2>
             <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
               {additionalServices.map((svc) => (
-                <div key={svc.name} className="rounded-2xl ring-1 ring-[hsl(var(--border))] p-6 bg-[hsl(var(--card))]">
+                <div key={svc.name} className="rounded-2xl ring-1 ring-border p-6 bg-card shadow-sm">
                   <h3 className="text-lg font-semibold text-foreground">{svc.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{svc.description}</p>
                   <ul className="mt-3 space-y-2 text-sm">
                     {svc.features.map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="mt-[2px] h-4 w-4 text-brand-primary" />
+                        <Check className="mt-[2px] h-4 w-4 text-[hsl(var(--primary))]" />
                         <span className="text-foreground/90">{f}</span>
                       </li>
                     ))}
