@@ -1,8 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Upload, Download } from 'lucide-react'
+import { Upload, Download } from 'lucide-react';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export default function ImportExportPage() {
   return (
@@ -15,36 +13,28 @@ export default function ImportExportPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Import Data</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Import projects, properties, and units from CSV or Excel files
-            </p>
-            <Button>
-              <Upload className="h-4 w-4 mr-2" />
-              Upload File
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="bg-white p-6 rounded-lg border border-border">
+          <h2 className="text-xl font-semibold mb-4">Import Data</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Import projects, properties, and units from CSV or Excel files
+          </p>
+          <button className="inline-flex items-center px-4 py-2 bg-[hsl(var(--primary))] text-primary-foreground rounded-lg hover:opacity-90 transition">
+            <Upload className="h-4 w-4 mr-2" />
+            Upload File
+          </button>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Export Data</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Export your projects and data to CSV or Excel format
-            </p>
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Download Data
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="bg-white p-6 rounded-lg border border-border">
+          <h2 className="text-xl font-semibold mb-4">Export Data</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Export your projects and data to CSV or Excel format
+          </p>
+          <button className="inline-flex items-center px-4 py-2 border border-border rounded-lg hover:bg-muted transition">
+            <Download className="h-4 w-4 mr-2" />
+            Download Data
+          </button>
+        </div>
       </div>
     </div>
-  )
+  );
 }

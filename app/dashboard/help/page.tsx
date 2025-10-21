@@ -1,7 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { HelpCircle, Book, FileQuestion, MessageCircle } from 'lucide-react'
+import { Book, FileQuestion, HelpCircle, MessageCircle } from 'lucide-react';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 const helpTopics = [
   {
@@ -24,7 +23,7 @@ const helpTopics = [
     icon: MessageCircle,
     description: 'Get help from our support team',
   },
-]
+];
 
 export default function HelpPage() {
   return (
@@ -38,19 +37,15 @@ export default function HelpPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {helpTopics.map((topic) => (
-          <Card key={topic.title} className="hover:border-primary transition-colors cursor-pointer">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
-                <topic.icon className="h-5 w-5 text-primary" />
-                {topic.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{topic.description}</p>
-            </CardContent>
-          </Card>
+          <div key={topic.title} className="bg-white p-6 rounded-lg border border-border hover:border-[hsl(var(--primary))] transition-colors cursor-pointer">
+            <div className="flex items-center gap-3 mb-2">
+              <topic.icon className="h-5 w-5 text-[hsl(var(--primary))]" />
+              <h3 className="text-lg font-semibold">{topic.title}</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">{topic.description}</p>
+          </div>
         ))}
       </div>
     </div>
-  )
+  );
 }

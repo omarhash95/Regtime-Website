@@ -1,69 +1,59 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { toast } from 'sonner'
-import { ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 export default function NewProjectPage() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     project_type: 'affordable_housing',
     budget: '',
-  })
-  const router = useRouter()
-  const supabase = createClient()
+  });
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const token = typeof window !== 'undefined' ? localStorage.getItem('supabase_token') : null;
 
-      if (!user) {
-        toast.error('You must be logged in to create a project')
-        return
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          project_type: formData.project_type,
+          budget: formData.budget ? parseFloat(formData.budget) : null,
+          status: 'active',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create project');
       }
 
-      const { error } = await supabase.from('projects').insert({
-        user_id: user.id,
-        name: formData.name,
-        description: formData.description,
-        project_type: formData.project_type,
-        budget: formData.budget ? parseFloat(formData.budget) : null,
-        status: 'active',
-      })
-
-      if (error) {
-        toast.error(error.message)
-      } else {
-        toast.success('Project created successfully')
-        router.push('/dashboard/projects')
-      }
+      router.push('/dashboard/projects');
     } catch (error) {
-      toast.error('An unexpected error occurred')
+      alert('Failed to create project');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard/projects">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
+        <Link href="/dashboard/projects" className="p-2 hover:bg-gray-100 rounded-lg transition">
+          <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-foreground">New Project</h1>
@@ -73,62 +63,73 @@ export default function NewProjectPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Project Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Project Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                placeholder="e.g., Brooklyn Affordable Housing"
-                disabled={loading}
-              />
-            </div>
+      <div className="bg-white p-6 rounded-lg border border-border">
+        <h2 className="text-xl font-semibold mb-6">Project Details</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="name" className="block text-sm font-medium">
+              Project Name *
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              placeholder="e.g., Brooklyn Affordable Housing"
+              disabled={loading}
+              className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Provide details about this project..."
-                disabled={loading}
-                rows={4}
-              />
-            </div>
+          <div className="space-y-2">
+            <label htmlFor="description" className="block text-sm font-medium">
+              Description
+            </label>
+            <textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Provide details about this project..."
+              disabled={loading}
+              rows={4}
+              className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="budget">Budget</Label>
-              <Input
-                id="budget"
-                type="number"
-                step="0.01"
-                value={formData.budget}
-                onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                placeholder="0.00"
-                disabled={loading}
-              />
-            </div>
+          <div className="space-y-2">
+            <label htmlFor="budget" className="block text-sm font-medium">
+              Budget
+            </label>
+            <input
+              id="budget"
+              type="number"
+              step="0.01"
+              value={formData.budget}
+              onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+              placeholder="0.00"
+              disabled={loading}
+              className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+            />
+          </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Creating...' : 'Create Project'}
-              </Button>
-              <Link href="/dashboard/projects">
-                <Button type="button" variant="outline" disabled={loading}>
-                  Cancel
-                </Button>
-              </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+          <div className="flex gap-3 pt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-[hsl(var(--primary))] text-primary-foreground rounded-lg hover:opacity-90 transition disabled:opacity-50"
+            >
+              {loading ? 'Creating...' : 'Create Project'}
+            </button>
+            <Link
+              href="/dashboard/projects"
+              className="px-4 py-2 border border-border rounded-lg hover:bg-muted transition"
+            >
+              Cancel
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
-  )
+  );
 }

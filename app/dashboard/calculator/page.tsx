@@ -1,7 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calculator } from 'lucide-react'
+import { Calculator } from 'lucide-react';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export default function CalculatorPage() {
   return (
@@ -13,14 +12,14 @@ export default function CalculatorPage() {
         </p>
       </div>
 
-      <Card>
-        <CardContent className="py-16 text-center">
+      <div className="bg-white p-6 rounded-lg border border-border">
+        <div className="py-16 text-center">
           <Calculator className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
           <p className="text-muted-foreground">
             FAR Calculator functionality will be available soon
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

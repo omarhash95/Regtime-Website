@@ -1,11 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Search } from 'lucide-react'
+'use client';
 
-export const dynamic = 'force-dynamic'
+import { useState } from 'react';
+import { Search } from 'lucide-react';
 
 export default function PropertiesPage() {
+  const [query, setQuery] = useState('');
+
   return (
     <div className="space-y-6">
       <div>
@@ -15,36 +15,33 @@ export default function PropertiesPage() {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Search Properties</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <Input
-                placeholder="Enter BBL, address, or owner name..."
-                className="w-full"
-              />
-            </div>
-            <Button>
-              <Search className="h-4 w-4 mr-2" />
-              Search
-            </Button>
-          </div>
-          <p className="text-sm text-muted-foreground mt-4">
-            Search for NYC properties using Borough-Block-Lot (BBL) numbers or property details
-          </p>
-        </CardContent>
-      </Card>
+      <div className="bg-white p-6 rounded-lg border border-border">
+        <h2 className="text-xl font-semibold mb-4">Search Properties</h2>
+        <div className="flex gap-4">
+          <input
+            type="text"
+            placeholder="Enter BBL, address, or owner name..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+          />
+          <button className="inline-flex items-center px-4 py-2 bg-[hsl(var(--primary))] text-primary-foreground rounded-lg hover:opacity-90 transition">
+            <Search className="h-4 w-4 mr-2" />
+            Search
+          </button>
+        </div>
+        <p className="text-sm text-muted-foreground mt-4">
+          Search for NYC properties using Borough-Block-Lot (BBL) numbers or property details
+        </p>
+      </div>
 
-      <Card>
-        <CardContent className="py-16 text-center">
+      <div className="bg-white p-6 rounded-lg border border-border">
+        <div className="py-16 text-center">
           <p className="text-muted-foreground">
             Enter a search query to find properties
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
