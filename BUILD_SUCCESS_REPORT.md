@@ -2,9 +2,9 @@
 
 ## Build Status: **SUCCESSFUL**
 
-Date: 2025-10-20
+Date: 2025-10-21
 Build Command: `npm run build`
-Next.js Version: 14.2.32
+Next.js Version: 13.5.6
 
 ---
 
