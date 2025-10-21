@@ -1,0 +1,9 @@
+*.backup
+*.log
+*.md
+node_modules
+.next
+.env
+.env.local
+*.tsbuildinfo
+coverage
