@@ -15,13 +15,7 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-  },
-  compiler: {
-    // Disable SWC and use Babel for environments where native addons are disabled
-    removeConsole: false,
-  },
+  // Next.js 13.5 uses Babel by default when .babelrc is present
   swcMinify: false,
 };
 

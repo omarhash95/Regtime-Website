@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import Script from 'next/script';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import RouteTransition from '@/components/ux/RouteTransition';
@@ -54,9 +54,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-};
-
-export const viewport: Viewport = {
   themeColor: '#0b0b0b',
   colorScheme: 'dark',
 };
@@ -69,6 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#0b0b0b" />
         <meta name="color-scheme" content="dark" />
         <link rel="icon" href="/IconMark Alice Blue 540px.png" type="image/png" />
         <link rel="apple-touch-icon" href="/IconMark Alice Blue 540px.png" />
