@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  swcMinify: false,
   images: {
     unoptimized: true,
   },
@@ -8,6 +9,10 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: false,
+  },
+  webpack: (config, { isServer }) => {
+    config.cache = false;
+    return config;
   },
 }
 
