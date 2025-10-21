@@ -1,19 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   swcMinify: false,
-  images: {
-    unoptimized: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-  webpack: (config, { isServer }) => {
+  webpack: (config) => {
     config.cache = false;
     return config;
   },
-}
-
-module.exports = nextConfig
+};
+module.exports = nextConfig;
