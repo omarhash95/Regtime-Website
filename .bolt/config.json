@@ -1,3 +1,37 @@
 {
-  "template": "nextjs-shadcn"
+  "template": "nextjs-shadcn",
+  "project_scope": {
+    "website": {
+      "path": "app",
+      "type": "marketing_site"
+    },
+    "dashboard": {
+      "path": "app/(dashboard)",
+      "type": "dashboard_app",
+      "requires_auth": true
+    }
+  },
+  "architecture": {
+    "runtime_nodejs_routes": true,
+    "disable_persistent_fs_cache": true,
+    "edge_safe": false
+  },
+  "database": {
+    "provider": "supabase",
+    "env": {
+      "NEXT_PUBLIC_SUPABASE_URL": "required",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "required",
+      "SUPABASE_SERVICE_ROLE_KEY": "server-only"
+    }
+  },
+  "ui_stack": {
+    "css": "tailwind",
+    "component_library": "shadcn/ui",
+    "icon_library": "lucide-react"
+  },
+  "generation_guidelines": {
+    "production_ready_design": true,
+    "no_cookie_cutter": true,
+    "client_hooks_use_client_directive": true
+  }
 }
