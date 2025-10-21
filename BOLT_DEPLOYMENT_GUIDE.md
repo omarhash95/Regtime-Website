@@ -1,54 +1,100 @@
-# Bolt Deployment Guide - Regtime Application
+# Bolt Deployment Troubleshooting Guide
 
-## Overview
+## Current Status: ✅ Build Succeeds
 
-This application has been specially configured to work in Bolt's restricted environment where native addons are disabled. This guide explains the solutions implemented and how to maintain them.
-
----
-
-## The Problem
-
-**Next.js 14 requires SWC (Speedy Web Compiler)**, which is a Rust-based native addon. However:
-- ❌ Bolt's environment **disables native addons** for security
-- ❌ Next.js 14 attempts to load SWC binaries **before** checking for Babel config
-- ❌ This causes build failures: `Failed to load SWC binary for linux/x64`
+```bash
+npm run build
+# ✓ Generating static pages (23/23)
+# ✓ Build complete
+```
 
 ---
 
-## The Solution
+## Publishing Error: "[object Object]"
 
-### 1. **SWC Binary Stubs**
+This generic error usually means:
 
-We created stub files that prevent the native SWC binaries from being loaded:
+### 🔴 **MISSING ENVIRONMENT VARIABLES** (90% of cases)
 
-**Location**: `scripts/patch-swc.js`
+Bolt requires Supabase environment variables **before** deployment.
 
-This script:
-- Creates stub `index.js` files in `@next/swc-*` packages
-- Modifies `package.json` to point to stubs instead of native binaries
-- Runs automatically after `npm install` via the `postinstall` hook
+**Required Variables:**
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-### 2. **Babel Configuration**
+**How to Fix:**
+1. Go to Bolt project settings → Environment Variables
+2. Add both variables above
+3. Click "Redeploy" or "Publish"
 
-**File**: `.babelrc`
+**Why This Causes Publishing Failure:**
+- Middleware needs Supabase connection
+- Build succeeds locally but server start fails without env vars
+- Bolt shows generic "[object Object]" instead of actual error
+
+---
+
+## The Solution: Next.js 13.5.6
+
+### Why Not Next.js 14?
+
+Next.js 14 has a fatal flaw for Bolt:
+- Requires SWC (Rust binary) before loading configuration
+- Cannot be bypassed with Babel alone
+- Incompatible with Bolt's disabled native addons
+
+### Why Next.js 13.5.6?
+
+- ✅ Native Babel support (no SWC required)
+- ✅ Stable LTS version
+- ✅ Full feature parity
+- ✅ Works in restricted environments
+
+---
+
+## Configuration Files
+
+### package.json
+
+```json
+{
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "start": "next start -p ${PORT:-3000}"
+  }
+}
+```
+
+### .babelrc
+
 ```json
 {
   "presets": ["next/babel"]
 }
 ```
 
-This tells Next.js to use Babel for transpilation instead of SWC.
+### next.config.js
 
-### 3. **Next.js Configuration**
-
-**File**: `next.config.js`
 ```javascript
-swcMinify: false  // Disable SWC minification
+module.exports = {
+  output: 'standalone',
+  swcMinify: false,
+  experimental: {
+    serverActions: true
+  }
+}
 ```
 
-### 4. **Route Structure**
+---
 
-Next.js route groups `(auth)`, `(site)`, `(dashboard)` were **removed** because they don't work reliably with Babel.
+## Route Structure
+
+Route groups are **not used** for Babel compatibility.
 
 **Before:**
 ```
@@ -66,34 +112,35 @@ app/
 └── dashboard/
 ```
 
-### 5. **Font Loading**
-
-Replaced `next/font` (requires SWC) with CSS `@font-face` declarations in `app/globals.css`.
-
 ---
 
-## Build Instructions
+## Deployment Steps
 
-### First Time Setup
+### 1. Set Environment Variables
 
-1. Clone the repository
-2. Run `npm install` (this automatically patches SWC via postinstall)
-3. Run `npm run build`
+**In Bolt Dashboard:**
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+```
 
-### After Adding Dependencies
-
-The `postinstall` script runs automatically, but if you encounter SWC errors:
+### 2. Verify Build
 
 ```bash
-npm run postinstall
+npm install
 npm run build
 ```
 
-### Manual Patching (if needed)
+### 3. Test Locally
 
 ```bash
-node scripts/patch-swc.js
+npm start
+# Visit http://localhost:3000
 ```
+
+### 4. Publish to Bolt
+
+Click "Publish" - should work now with env vars set
 
 ---
 

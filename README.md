@@ -2,6 +2,16 @@
 
 A modern, production-ready business website built with Next.js 13, TypeScript, and Tailwind CSS. Features comprehensive brand integration, analytics tracking, and lead generation forms.
 
+## 🚨 Publishing to Bolt? Read This First
+
+**Getting "[object Object]" error?** → **[PUBLISHING_ERROR_FIX.md](./PUBLISHING_ERROR_FIX.md)**
+
+**TL;DR:** Add these environment variables in Bolt:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Then publish again. That's it.
+
 ## 🚀 Features
 
 - **Modern Tech Stack**: Next.js 13 with App Router, TypeScript, Tailwind CSS
