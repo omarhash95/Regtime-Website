@@ -21,6 +21,8 @@ const nextConfig = {
     serverActions: true,
   },
   webpack: (config, { isServer }) => {
+    config.cache = false;
+
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
