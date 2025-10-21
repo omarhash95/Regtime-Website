@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "doctor": "node scripts/doctor.mjs"
+    "doctor": "node scripts/doctor.mjs",
+    "postinstall": "node scripts/patch-swc.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
