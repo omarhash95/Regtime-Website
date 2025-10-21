@@ -1,12 +1,16 @@
-# Regtime - Production Deployment Guide
+# ✅ Ready to Deploy to Bolt
 
-## Architecture Overview
+## Your Credentials Are Now Set
 
-This application has been **fundamentally re-architected** to work in restricted environments (Bolt hosting) where native addons are disabled.
+Local `.env` contains your Supabase credentials:
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xwdckatknldxjjudltkp.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
 
 ---
 
-## ✅ THE SOLUTION: Next.js 13.5.6
+## 🚀 FINAL STEP: Add to Bolt Dashboard
 
 ### Why Next.js 13 Instead of 14?
 

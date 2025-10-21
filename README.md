@@ -2,15 +2,11 @@
 
 A modern, production-ready business website built with Next.js 13, TypeScript, and Tailwind CSS. Features comprehensive brand integration, analytics tracking, and lead generation forms.
 
-## 🚨 Publishing to Bolt? Read This First
+## 🚀 Ready to Publish to Bolt
 
-**Getting "[object Object]" error?** → **[PUBLISHING_ERROR_FIX.md](./PUBLISHING_ERROR_FIX.md)**
+**→ READ: [PUBLISH_TO_BOLT.md](./PUBLISH_TO_BOLT.md) ← START HERE**
 
-**TL;DR:** Add these environment variables in Bolt:
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-Then publish again. That's it.
+Your credentials are set. Just add 2 environment variables to Bolt dashboard and click Publish.
 
 ## 🚀 Features
 
