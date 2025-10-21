@@ -1,9 +1,61 @@
-For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
+For this project (merged website + dashboard) you are generating **production-quality, bug-free, maintainable** code.  
+Below are the rules & architectural constraints:
 
-When using client-side hooks (useState and useEffect) in a component that's being treated as a Server Component by Next.js, always add the "use client" directive at the top of the file.
+1. **Stack & UI**  
+   - Use React (Next.js 14 with App Router).  
+   - Tailwind CSS + shadcn/ui for UI components.  
+   - Icons only from lucide-react (for logos, nav, etc).  
+   - Do **not** install new UI theme or icon libraries unless explicitly requested.  
+   - The design must not feel “template” or “cookie-cutter”; aim for clean, modern, bespoke feel worthy of production.
 
-Do not write code that will trigger this error: "Warning: Extra attributes from the server: %s%s""class,style"
+2. **Client vs Server Components**  
+   - If you use `useState`, `useEffect`, `useContext`, or other React client hooks, the file must start with `"use client"`.  
+   - All other components should default to server components (no `"use client"`).  
+   - If the component or route uses `cookies()`, `headers()`, database queries, or imports `@supabase/supabase-js` or `@supabase/ssr`, it must run in Node runtime:  
+     ```ts
+     export const runtime = "nodejs";
+     export const dynamic = "force-dynamic";
+     export const revalidate = 0;
+     // optionally: export const fetchCache = "force-no-store";
+     ```
+   - Do not call `cookies()` (or other request-scope APIs) in module scope, `generateStaticParams`, or `generateMetadata`.
 
-By default, this template supports JSX syntax with Tailwind CSS classes, the shadcn/ui library, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
+3. **Database & Auth**  
+   - Use Supabase (or clearly chosen simple DB) for user auth + dashboard data.  
+   - In server code use `@supabase/ssr` `createServerClient(request, response)`.  
+   - In client code use `@supabase/ssr` `createBrowserClient`.  
+   - Provide required env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (server only).  
+   - Do not introduce native addons or use Node-native binaries; avoid packages incompatible with WebContainer/hosting constraints.
 
-Use icons from lucide-react for logos.
+4. **Build & Hosting Constraints**  
+   - This app will run in Bolt’s hosting environment with constrained FS and buildup; avoid persistent chunk caches that cause missing-module errors (`Cannot find module './276.js'`).  
+   - In `next.config.js`, disable persistent filesystem webpack cache: `config.cache = false`.  
+   - Ensure no `output: "export"` (since dashboard requires SSR).  
+   - For tooling: scripts in `package.json` should set `NEXT_DISABLE_FS_CACHE=1 DISABLE_V8_COMPILE_CACHE=1` for dev/build.
+
+5. **Dashboard + Website Separation**  
+   - The public marketing site (homepage, /about, /services, etc) remains unchanged.  
+   - The dashboard application sits under `/dashboard/*` or `app/(dashboard)/…`.  
+   - The dashboard uses auth guard: user must be signed in to access. Visitors must be redirected to login.  
+   - Shared components and UI should be reused; avoid duplication, unify styles and design tokens.
+
+6. **Error prevention & best practices**  
+   - Do not import Node APIs (fs, path, process.versions) in Edge runtime. If you do, change runtime to `nodejs`.  
+   - Never call `cookies()`, `headers()`, `fetch()` with `cache: 'no-store'` in a file being pre-rendered or static. Use `force-dynamic`.  
+   - Move any `metadata.themeColor` export into `viewport = { themeColor: … }`.  
+   - Avoid large serialized strings (>100 kiB) in webpack cache; extract bigger data into manageable buffers, modules, or JSON files.
+
+7. **Quality & Maintainability**  
+   - Write clear, modular code. One component = one file, unless very small utility.  
+   - Provide JSDoc or TS types for server utilities (DB, auth).  
+   - Keep styling consistent: define design tokens (colors, spacing, fonts) and reuse.  
+   - Ensure accessibility: alt text for images, ARIA labels, focus states, contrast, keyboard nav.  
+   - Add simple end-to-end smoke tests or manual test plan (login, dashboard load, data fetch, error handling).
+
+8. **Deliverables on changes**  
+   - Whenever generating broad changes ask for: (a) file list changed, (b) diff summary for each file, (c) test steps to validate.  
+   - Confirm builds locally: `npm run build`, `npm run dev` with zero errors/warnings of the above types.
+
+By following these rules, every code generation or refactor by you or the AI in this project will maintain architectural integrity, runtime correctness, and production readiness.  
+Only modify these rules when explicitly requested.
+
