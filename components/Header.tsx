@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 
 const navigation = [
@@ -22,37 +21,25 @@ export default function Header() {
         <div className="flex lg:flex-1">
           <Link href="/" aria-label="Regtime home" className="-m-1.5 p-1.5">
             <div className="flex items-center gap-2">
-              <Image
+              <img
                 src="/IconMark Night 540px.png"
                 alt="Regtime icon"
-                width={28}
-                height={28}
                 className="h-7 w-auto dark:hidden"
-                priority
               />
-              <Image
+              <img
                 src="/IconMark White 540px.png"
                 alt="Regtime icon"
-                width={28}
-                height={28}
                 className="h-7 w-auto hidden dark:block"
-                priority
               />
-              <Image
+              <img
                 src="/Wordmark Night 1080px.png"
                 alt="Regtime"
-                width={160}
-                height={36}
                 className="h-8 w-auto md:h-10 md:w-auto dark:hidden"
-                priority
               />
-              <Image
+              <img
                 src="/Wordmark White 1080px.png"
                 alt="Regtime"
-                width={160}
-                height={36}
                 className="h-8 w-auto md:h-10 md:w-auto hidden dark:block"
-                priority
               />
             </div>
           </Link>
@@ -89,10 +76,10 @@ export default function Header() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
               <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileOpen(false)} aria-label="Regtime home">
                 <div className="flex items-center gap-2">
-                  <Image src="/IconMark Night 540px.png" alt="Regtime icon" width={24} height={24} className="h-6 w-auto dark:hidden" />
-                  <Image src="/IconMark White 540px.png" alt="Regtime icon" width={24} height={24} className="h-6 w-auto hidden dark:block" />
-                  <Image src="/Wordmark Night 1080px.png" alt="Regtime" width={140} height={32} className="h-7 w-auto dark:hidden" />
-                  <Image src="/Wordmark White 1080px.png" alt="Regtime" width={140} height={32} className="h-7 w-auto hidden dark:block" />
+                  <img src="/IconMark Night 540px.png" alt="Regtime icon" className="h-6 w-auto dark:hidden" />
+                  <img src="/IconMark White 540px.png" alt="Regtime icon" className="h-6 w-auto hidden dark:block" />
+                  <img src="/Wordmark Night 1080px.png" alt="Regtime" className="h-7 w-auto dark:hidden" />
+                  <img src="/Wordmark White 1080px.png" alt="Regtime" className="h-7 w-auto hidden dark:block" />
                 </div>
               </Link>
               <button

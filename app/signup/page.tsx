@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
@@ -62,13 +61,10 @@ export default function SignupPage() {
         <div className="bg-card border border-border rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
-              <Image
+              <img
                 src="/Wordmark Night 1080px.png"
                 alt="Regtime"
-                width={200}
-                height={60}
                 className="h-12 w-auto mx-auto"
-                priority
               />
             </Link>
             <h1 className="text-3xl font-bold text-foreground mb-2">Create an account</h1>

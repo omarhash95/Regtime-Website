@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Check, ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
@@ -74,7 +73,7 @@ export default function ServicesPage() {
             {services.map((s) => (
               <div key={s.name} className="p-6 ring-1 ring-border rounded-2xl bg-card shadow-sm">
                 <div className="flex items-center gap-3">
-                  <Image src={s.image} alt={`${s.name} logo`} width={56} height={56} className="h-14 w-auto" />
+                  <img src={s.image} alt={`${s.name} logo`} className="h-14 w-auto" />
                   <h3 className="text-xl font-semibold text-foreground">{s.name}</h3>
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">{s.description}</p>

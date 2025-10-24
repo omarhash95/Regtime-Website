@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 const navigation = {
@@ -42,11 +41,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link href="/" className="inline-flex items-center gap-2">
-              <Image
+              <img
                 src="/Wordmark White 1080px.png"
                 alt="Regtime"
-                width={160}
-                height={40}
                 className="h-8 w-auto"
               />
             </Link>
